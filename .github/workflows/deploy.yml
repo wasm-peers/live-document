@@ -21,12 +21,18 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
       # Step 2
-      - name: Install wasm32-unknown-uknown target and trunk
+      - name: Install wasm32-unknown-uknown target
         run: rustup target add wasm32-unknown-unknown
       - name: Install trunk
         run: cargo install trunk
       - name: Build yew app with trunk
-        run: WS_IP_PORT=${{ secrets.WS_IP_PORT}} trunk build --release
+        run: trunk build --release
+        env:
+          WS_IP_PORT: ${{ secrets.WS_IP_PORT }}
+          STUN_SERVER_URLS: ${{ secrets.STUN_SERVER_URLS }}
+          TURN_SERVER_URLS: ${{ secrets.TURN_SERVER_URLS }}
+          TURN_SERVER_USERNAME: ${{ secrets.TURN_SERVER_USERNAME }}
+          TURN_SERVER_CREDENTIAL: ${{ secrets.TURN_SERVER_CREDENTIAL }}
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/ s3://rusty-games --delete --acl public-read
         env:

@@ -63,9 +63,14 @@ impl Component for Document {
         };
 
         let is_ready = Rc::new(RefCell::new(false));
+        let connection_type = ConnectionType::StunAndTurn {
+            stun_urls: env!("STUN_SERVER_URLS").to_string(),
+            turn_urls: env!("TURN_SERVER_URLS").to_string(),
+            username: env!("TURN_SERVER_USERNAME").to_string(),
+            credential: env!("TURN_SERVER_CREDENTIAL").to_string(),
+        };
         let mut network_manager =
-            NetworkManager::new(env!("WS_IP_PORT"), session_id.clone(), ConnectionType::Stun)
-                .unwrap();
+            NetworkManager::new(env!("WS_IP_PORT"), session_id.clone(), connection_type).unwrap();
         let on_open_callback = {
             let mini_server = network_manager.clone();
             let is_ready = is_ready.clone();

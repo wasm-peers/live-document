@@ -229,9 +229,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.113"
+version = "0.2.114"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eef78b64d87775463c549fbd80e19249ef436ea3bf1de2a1eb7e717ec7fab1e9"
+checksum = "b0005d08a8f7b65fb8073cb697aa0b12b631ed251ce73d862ce50eeb52ce3b50"
 
 [[package]]
 name = "live-document"
@@ -320,7 +320,7 @@ checksum = "afab94fb28594581f62d981211a9a4d53cc8130bbcbbb89a0440d9b8e81a7746"
 [[package]]
 name = "rusty-games-library"
 version = "0.2.0"
-source = "git+https://github.com/rusty-games/rusty-games?rev=2e6032f#2e6032f26f525c8ce0689ff7c597c5a9a4ea53ae"
+source = "git+https://github.com/rusty-games/rusty-games?rev=6d78c90#6d78c90ca9d236bda20b2a91f98caca1ed7f18b4"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -338,7 +338,7 @@ dependencies = [
 [[package]]
 name = "rusty-games-protocol"
 version = "0.2.0"
-source = "git+https://github.com/rusty-games/rusty-games?rev=2e6032f#2e6032f26f525c8ce0689ff7c597c5a9a4ea53ae"
+source = "git+https://github.com/rusty-games/rusty-games?rev=6d78c90#6d78c90ca9d236bda20b2a91f98caca1ed7f18b4"
 dependencies = [
  "serde",
 ]
