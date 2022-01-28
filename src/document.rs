@@ -70,7 +70,7 @@ impl Component for Document {
             credential: env!("TURN_SERVER_CREDENTIAL").to_string(),
         };
         let mut network_manager =
-            NetworkManager::new(env!("WS_IP_PORT"), session_id.clone(), connection_type).unwrap();
+            NetworkManager::new(concat!(env!("SIGNALING_SERVER_URL"), "/many-to-many"), session_id.clone(), connection_type).unwrap();
         let on_open_callback = {
             let mini_server = network_manager.clone();
             let is_ready = is_ready.clone();

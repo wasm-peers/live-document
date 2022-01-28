@@ -28,11 +28,16 @@ jobs:
       - name: Build yew app with trunk
         run: trunk build --release
         env:
-          WS_IP_PORT: ${{ secrets.WS_IP_PORT }}
+          SIGNALING_SERVER_URL: ${{ secrets.SIGNALING_SERVER_URL }}
           STUN_SERVER_URLS: ${{ secrets.STUN_SERVER_URLS }}
           TURN_SERVER_URLS: ${{ secrets.TURN_SERVER_URLS }}
           TURN_SERVER_USERNAME: ${{ secrets.TURN_SERVER_USERNAME }}
           TURN_SERVER_CREDENTIAL: ${{ secrets.TURN_SERVER_CREDENTIAL }}
+      - name: Add as job artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: ./dist
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/ s3://rusty-games --delete --acl public-read
         env:
