@@ -1,11 +1,10 @@
 use rusty_games_library::many_to_many::NetworkManager;
-use rusty_games_library::{get_random_session_id, ConnectionType, SessionId};
+use rusty_games_library::{ConnectionType, get_random_session_id, SessionId};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::rc::Rc;
-use wasm_bindgen::JsCast;
-use web_sys::{HtmlTextAreaElement, UrlSearchParams};
-use yew::{html, Component, Context, Html};
+use yew::{Component, Context, html, Html};
+use crate::utils;
 
 pub(crate) enum DocumentMsg {
     UpdateValue,
@@ -28,28 +27,14 @@ pub(crate) struct Document {
     is_ready: Rc<RefCell<bool>>,
 }
 
-fn get_query_params() -> UrlSearchParams {
-    let search = web_sys::window().unwrap().location().search().unwrap();
-    UrlSearchParams::new_with_str(&search).unwrap()
-}
-
-fn get_text_area() -> HtmlTextAreaElement {
-    web_sys::window()
-        .unwrap()
-        .document()
-        .expect("document node is missing")
-        .get_element_by_id("document-textarea")
-        .expect("could not find textarea element by id")
-        .dyn_into::<HtmlTextAreaElement>()
-        .expect("element is not a textarea")
-}
+const TEXTAREA_ID: &str = "document-textarea";
 
 impl Component for Document {
     type Message = DocumentMsg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        let query_params = get_query_params();
+        let query_params = utils::get_query_params();
         let session_id = match query_params.get("session_id") {
             Some(session_string) => SessionId::new(session_string),
             None => {
@@ -76,11 +61,11 @@ impl Component for Document {
             let is_ready = is_ready.clone();
             move |user_id| {
                 if !*is_ready.borrow() {
-                    get_text_area().set_disabled(false);
-                    get_text_area().set_placeholder("This is a live document shared with a other users.\nWhat you write will be visible to all.");
+                    utils::get_text_area(TEXTAREA_ID).set_disabled(false);
+                    utils::get_text_area(TEXTAREA_ID).set_placeholder("This is a live document shared with other users.\nWhat you write will be visible to everyone.");
                     *is_ready.borrow_mut() = true;
                 }
-                let value = get_text_area().value();
+                let value = utils::get_text_area(TEXTAREA_ID).value();
                 if !value.is_empty() {
                     mini_server
                         .send_message(user_id, &value)
@@ -90,7 +75,7 @@ impl Component for Document {
         };
         let on_message_callback = {
             move |_, message: String| {
-                get_text_area().set_value(&message);
+                utils::get_text_area(TEXTAREA_ID).set_value(&message);
             }
         };
         network_manager
@@ -106,7 +91,7 @@ impl Component for Document {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Self::Message::UpdateValue => {
-                let textarea_value = get_text_area().value();
+                let textarea_value = utils::get_text_area(TEXTAREA_ID).value();
                 self.network_manager.send_message_to_all(&textarea_value);
             }
         }
@@ -118,10 +103,10 @@ impl Component for Document {
         let disabled = !*self.is_ready.borrow();
         let placeholder = "This is a live document shared with other users.\nYou will be allowed to write once other join, or your connection is established.";
         html! {
-            <main style="text-align:center">
-                <p> { "Share session id: " } { &self.session_id } </p>
-                <p> { "or just copy the page url." } </p>
-                <textarea id={ "document-textarea" } cols="100" rows="40" { disabled } { placeholder } { oninput }/>
+            <main class="px-3">
+                <p class="lead"> { "Share session id: " } { &self.session_id } </p>
+                <p class="lead"> { "or just copy the page url." } </p>
+                <textarea id={ TEXTAREA_ID } cols="100" rows="30" { disabled } { placeholder } { oninput }/>
             </main>
         }
     }

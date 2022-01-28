@@ -6,6 +6,7 @@ use crate::home::Home;
 
 mod document;
 mod home;
+mod utils;
 
 #[derive(Clone, Routable, PartialEq)]
 enum Route {
@@ -32,9 +33,9 @@ impl Component for App {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <BrowserRouter>
-            <main>
-            <Switch<Route> render={Switch::render(switch)} />
-            </main>
+                <main>
+                    <Switch<Route> render={Switch::render(switch)} />
+                </main>
             </BrowserRouter>
         }
     }
