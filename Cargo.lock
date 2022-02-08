@@ -239,10 +239,10 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "log",
- "rusty-games-library",
  "serde",
  "wasm-bindgen",
  "wasm-logger",
+ "wasm-peers",
  "web-sys",
  "yew",
  "yew-router",
@@ -316,32 +316,6 @@ name = "route-recognizer"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "afab94fb28594581f62d981211a9a4d53cc8130bbcbbb89a0440d9b8e81a7746"
-
-[[package]]
-name = "rusty-games-library"
-version = "0.2.0"
-source = "git+https://github.com/rusty-games/rusty-games?rev=6d78c90#6d78c90ca9d236bda20b2a91f98caca1ed7f18b4"
-dependencies = [
- "console_error_panic_hook",
- "js-sys",
- "log",
- "rusty-games-protocol",
- "serde",
- "serde-json-wasm",
- "uuid",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "wasm-logger",
- "web-sys",
-]
-
-[[package]]
-name = "rusty-games-protocol"
-version = "0.2.0"
-source = "git+https://github.com/rusty-games/rusty-games?rev=6d78c90#6d78c90ca9d236bda20b2a91f98caca1ed7f18b4"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "ryu"
@@ -560,6 +534,34 @@ dependencies = [
  "log",
  "wasm-bindgen",
  "web-sys",
+]
+
+[[package]]
+name = "wasm-peers"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0995c0ebc539ff66f56f1c3fbf1aaa1f94b403b57342872ddfe28edb0a713484"
+dependencies = [
+ "console_error_panic_hook",
+ "js-sys",
+ "log",
+ "serde",
+ "serde-json-wasm",
+ "uuid",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "wasm-logger",
+ "wasm-peers-protocol",
+ "web-sys",
+]
+
+[[package]]
+name = "wasm-peers-protocol"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "597a4960581ab8e7999bbbdc28f3807434de0e82a4d064846ffa1f5f0f2418e8"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

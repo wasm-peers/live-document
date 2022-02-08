@@ -1,5 +1,5 @@
 use crate::document::DocumentQuery;
-use rusty_games_library::get_random_session_id;
+use wasm_peers::get_random_session_id;
 use yew::prelude::*;
 use yew_router::prelude::*;
 

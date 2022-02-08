@@ -1,5 +1,5 @@
-use rusty_games_library::many_to_many::NetworkManager;
-use rusty_games_library::{ConnectionType, get_random_session_id, SessionId};
+use wasm_peers::many_to_many::NetworkManager;
+use wasm_peers::{ConnectionType, get_random_session_id, SessionId};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::rc::Rc;
