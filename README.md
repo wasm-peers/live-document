@@ -1,7 +1,7 @@
 # Live Document
 
 Proof of concept application showcasing the usability of [wasm-peers](https://github.com/wasm-peers/wasm-peers)
-crate.
+crate for easy and costless peer-2-peer WebRTC communication.
 
 It's an application akin to Google Docs, where many users can share a document and see changes introduced by any
 of them in real-time.
