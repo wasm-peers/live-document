@@ -2,6 +2,15 @@
     text-align: center;
 }
 
+.document {
+    width: 80%;
+    box-sizing: border-box;
+}
+
+span.line {
+    display: inline-block;
+}
+
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {

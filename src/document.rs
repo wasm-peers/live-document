@@ -104,9 +104,9 @@ impl Component for Document {
         let placeholder = "This is a live document shared with other users.\nYou will be allowed to write once other join, or your connection is established.";
         html! {
             <main class="px-3">
-                <p class="lead"> { "Share session id: " } { &self.session_id } </p>
+                <p class="lead"> { "Share session id: " } <span class="line">{ &self.session_id }</span> </p>
                 <p class="lead"> { "or just copy the page url." } </p>
-                <textarea id={ TEXTAREA_ID } cols="100" rows="30" { disabled } { placeholder } { oninput }/>
+                <textarea id={ TEXTAREA_ID } class="document" cols="100" rows="30" { disabled } { placeholder } { oninput }/>
             </main>
         }
     }
