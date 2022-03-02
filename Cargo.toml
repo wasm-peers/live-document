@@ -16,4 +16,4 @@ web-sys = "0.3.55"
 wasm-bindgen = "0.2.78"
 serde = "1.0"
 
-wasm-peers = "0.3.2"
+wasm-peers = "0.4.0"

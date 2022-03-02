@@ -538,9 +538,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-peers"
-version = "0.3.2"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0995c0ebc539ff66f56f1c3fbf1aaa1f94b403b57342872ddfe28edb0a713484"
+checksum = "b79c794832ff4e08a05248f4e3268b7fb35913cc335829a6610fceab4f3933a9"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
