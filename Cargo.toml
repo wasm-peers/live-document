@@ -2,6 +2,12 @@
 name = "live-document"
 version = "0.1.0"
 edition = "2021"
+authors = ["Tomasz Karwowski <to.karwowski@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "A shared document application akin to Google Docs."
+#homepage
+repository = "https://github.com/wasm-peers/live-document"
+keywords = ["wasm", "webrtc", "peer-to-peer", "webassembly", "shared document", "CRDT"]
 
 [features]
 default = ["console_error_panic_hook"]

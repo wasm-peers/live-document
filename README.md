@@ -25,16 +25,17 @@ and [trunk](https://trunkrs.dev/) installed.
 Signaling server from wasm-peer project should be running on `0.0.0.0:9001`.
 See [here](https://github.com/wasm-peers/wasm-peers/tree/main/signaling-server) for instructions.
 
-First, some env variables are required:
+For now, only env variable without the default is the signaling server address 
+in production, it should be some publicly available server, for ex. EC2 instance (tiny one should suffice).
+
+For development, you can run the project in watch mode:
 ```bash
-# for now, only env variable without the default is the signaling server address
-# in production, it should be some publicly available server, for ex. EC2 instance (tiny one should suffice)
-export SIGNALING_SERVER_URL="ws://0.0.0.0:9001"
+SIGNALING_SERVER_URL="ws://0.0.0.0:9001" trunk serve # comes with awesome hot-reloading
 ```
 
-Then you can build the project:
+If you only want to build the static files:
 ```bash
-trunk build # trunk serve for awesome hot-reloading compile and serving
+SIGNALING_SERVER_URL="ws://0.0.0.0:9001" trunk build
 ```
 
 This will create a `dist` folder with `index.html` and all the other required files.
