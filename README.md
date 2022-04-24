@@ -41,6 +41,11 @@ SIGNALING_SERVER_URL="ws://0.0.0.0:9001" trunk build
 This will create a `dist` folder with `index.html` and all the other required files.
 You can serve them any way you like.
 
+## Roadmap
+- [ ] Add reference to GitHub
+- [ ] Use proper CRDT
+- [ ] Save and retrieve file contents from local cache
+
 ## Authors
 
 Tomasz Karwowski  
