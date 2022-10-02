@@ -29,11 +29,13 @@ For now, only env variable without the default is the signaling server address
 in production, it should be some publicly available server, for ex. EC2 instance (tiny one should suffice).
 
 For development, you can run the project in watch mode:
+
 ```bash
 SIGNALING_SERVER_URL="ws://0.0.0.0:9001" trunk serve # comes with awesome hot-reloading
 ```
 
 If you only want to build the static files:
+
 ```bash
 SIGNALING_SERVER_URL="ws://0.0.0.0:9001" trunk build
 ```
