@@ -1,5 +1,5 @@
-use web_sys::{HtmlInputElement, HtmlTextAreaElement, UrlSearchParams};
 use wasm_bindgen::JsCast;
+use web_sys::{HtmlInputElement, HtmlTextAreaElement, UrlSearchParams};
 
 pub fn get_query_params() -> UrlSearchParams {
     let search = web_sys::window().unwrap().location().search().unwrap();

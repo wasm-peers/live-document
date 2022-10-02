@@ -3,8 +3,8 @@ use wasm_peers::get_random_session_id;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::Route;
 use crate::utils::get_input;
+use crate::Route;
 
 pub(crate) enum HomeMsg {
     UpdateInput,
@@ -46,9 +46,7 @@ impl Component for Home {
                     .unwrap();
             })
         };
-        let update_input = ctx
-            .link()
-            .callback(|_| HomeMsg::UpdateInput);
+        let update_input = ctx.link().callback(|_| HomeMsg::UpdateInput);
         let join_existing = {
             let session_id = self.input.clone();
             Callback::once(move |_| {

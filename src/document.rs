@@ -1,10 +1,10 @@
-use wasm_peers::many_to_many::NetworkManager;
-use wasm_peers::{ConnectionType, get_random_session_id, SessionId};
+use crate::utils;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::rc::Rc;
-use yew::{Component, Context, html, Html};
-use crate::utils;
+use wasm_peers::many_to_many::NetworkManager;
+use wasm_peers::{get_random_session_id, ConnectionType, SessionId};
+use yew::{html, Component, Context, Html};
 
 pub(crate) enum DocumentMsg {
     UpdateValue,
@@ -54,8 +54,12 @@ impl Component for Document {
             username: env!("TURN_SERVER_USERNAME").to_string(),
             credential: env!("TURN_SERVER_CREDENTIAL").to_string(),
         };
-        let mut network_manager =
-            NetworkManager::new(concat!(env!("SIGNALING_SERVER_URL"), "/many-to-many"), session_id.clone(), connection_type).unwrap();
+        let mut network_manager = NetworkManager::new(
+            concat!(env!("SIGNALING_SERVER_URL"), "/many-to-many"),
+            session_id.clone(),
+            connection_type,
+        )
+        .unwrap();
         let on_open_callback = {
             let mini_server = network_manager.clone();
             let is_ready = is_ready.clone();
