@@ -100,9 +100,7 @@ impl Component for Document {
                 }
             }
         };
-        network_manager
-            .start(on_open_callback, on_message_callback)
-            .expect("mini server failed to start");
+        network_manager.start(on_open_callback, on_message_callback);
         Self {
             session_id,
             network_manager,
