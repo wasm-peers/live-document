@@ -9,7 +9,7 @@
     clippy::pedantic,
     clippy::nursery,
     clippy::dbg_macro,
-    // clippy::unwrap_used,
+    // clippy::unwrap_used, // TODO: bring this back
     clippy::integer_division,
     clippy::large_include_file,
     clippy::map_err_ignore,
@@ -36,7 +36,7 @@
     clippy::exit,
     clippy::filetype_is_file,
     clippy::float_cmp_const,
-    clippy::if_then_some_else_none,
+    // clippy::if_then_some_else_none, // messes with something in the document html element
     clippy::indexing_slicing,
     clippy::let_underscore_must_use,
     clippy::lossy_float_literal,
@@ -65,9 +65,12 @@
 )]
 
 mod app;
+mod config;
 mod document;
 mod error;
 mod home;
 mod utils;
 
 pub use app::{App, Route};
+pub use config::CONFIG;
+pub use error::{LiveDocumentError as Error, LiveDocumentResult as Result};

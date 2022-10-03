@@ -1,10 +1,11 @@
 use yew::{html, Component, Context, Html};
-use yew_router::prelude::*;
+use yew_router::router::BrowserRouter;
+use yew_router::{Routable, Switch};
 
 use crate::document::Document;
 use crate::home::Home;
 
-#[derive(Clone, Routable, PartialEq)]
+#[derive(Clone, Routable, PartialEq, Eq)]
 pub enum Route {
     #[at("/")]
     Home,
@@ -12,7 +13,7 @@ pub enum Route {
     Document,
 }
 
-pub struct App {}
+pub struct App;
 
 impl Component for App {
     type Message = ();
@@ -38,6 +39,7 @@ impl Component for App {
 }
 
 fn switch(routes: &Route) -> Html {
+    #[allow(clippy::let_unit_value)] // html! macro messes something up
     match routes.clone() {
         Route::Home => {
             html! { <Home /> }

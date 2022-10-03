@@ -1,27 +1,30 @@
-use crate::utils;
-use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use serde::{Deserialize, Serialize};
 use wasm_peers::many_to_many::NetworkManager;
 use wasm_peers::{get_random_session_id, ConnectionType, SessionId};
 use yew::{html, Component, Context, Html};
 
-pub(crate) enum DocumentMsg {
+use crate::utils::get_window;
+use crate::{utils, CONFIG};
+
+pub enum Msg {
     UpdateValue,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct DocumentQuery {
+pub struct Query {
     pub session_id: String,
 }
 
-impl DocumentQuery {
-    pub(crate) fn new(session_id: String) -> Self {
-        DocumentQuery { session_id }
+impl Query {
+    pub const fn new(session_id: String) -> Self {
+        Self { session_id }
     }
 }
 
-pub(crate) struct Document {
+pub struct Document {
     session_id: SessionId,
     network_manager: NetworkManager,
     is_ready: Rc<RefCell<bool>>,
@@ -30,46 +33,56 @@ pub(crate) struct Document {
 const TEXTAREA_ID: &str = "document-textarea";
 
 impl Component for Document {
-    type Message = DocumentMsg;
+    type Message = Msg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        let query_params = utils::get_query_params();
-        let session_id = match query_params.get("session_id") {
-            Some(session_string) => SessionId::new(session_string),
-            None => {
-                let location = web_sys::window().unwrap().location();
+        let query_params = utils::get_query_params().expect("failed to get query params, aborting");
+        let session_id = query_params.get("session_id").map_or_else(
+            || {
+                let location = get_window().expect("failed to get a window").location();
                 let generated_session_id = get_random_session_id();
                 query_params.append("session_id", generated_session_id.as_str());
                 let search: String = query_params.to_string().into();
                 location.set_search(&search).unwrap();
                 generated_session_id
-            }
-        };
+            },
+            SessionId::new,
+        );
 
         let is_ready = Rc::new(RefCell::new(false));
         let connection_type = ConnectionType::StunAndTurn {
-            stun_urls: env!("STUN_SERVER_URLS").to_string(),
-            turn_urls: env!("TURN_SERVER_URLS").to_string(),
-            username: env!("TURN_SERVER_USERNAME").to_string(),
-            credential: env!("TURN_SERVER_CREDENTIAL").to_string(),
+            stun_urls: CONFIG.stun_server_urls.clone(),
+            turn_urls: CONFIG.turn_server_urls.clone(),
+            username: CONFIG.turn_server_username.clone(),
+            credential: CONFIG.turn_server_credential.clone(),
         };
         let mut network_manager = NetworkManager::new(
-            concat!(env!("SIGNALING_SERVER_URL"), "/many-to-many"),
+            &format!("{}/{}", CONFIG.signaling_server_url, "many-to-many"),
             session_id.clone(),
             connection_type,
         )
         .unwrap();
         let on_open_callback = {
             let mini_server = network_manager.clone();
-            let is_ready = is_ready.clone();
+            let is_ready = Rc::clone(&is_ready);
             move |user_id| {
+                let text_area = match utils::get_text_area(TEXTAREA_ID) {
+                    Ok(text_area) => text_area,
+                    Err(err) => {
+                        log::error!("failed to get textarea: {:#?}", err);
+                        return;
+                    }
+                };
                 if !*is_ready.borrow() {
-                    utils::get_text_area(TEXTAREA_ID).set_disabled(false);
-                    utils::get_text_area(TEXTAREA_ID).set_placeholder("This is a live document shared with other users.\nWhat you write will be visible to everyone.");
+                    text_area.set_disabled(false);
+                    text_area.set_placeholder(
+                        "This is a live document shared with other users.\nWhat you write will be \
+                         visible to everyone.",
+                    );
                     *is_ready.borrow_mut() = true;
                 }
-                let value = utils::get_text_area(TEXTAREA_ID).value();
+                let value = text_area.value();
                 if !value.is_empty() {
                     mini_server
                         .send_message(user_id, &value)
@@ -78,34 +91,45 @@ impl Component for Document {
             }
         };
         let on_message_callback = {
-            move |_, message: String| {
-                utils::get_text_area(TEXTAREA_ID).set_value(&message);
+            move |_, message: String| match utils::get_text_area(TEXTAREA_ID) {
+                Ok(text_area) => {
+                    text_area.set_value(&message);
+                }
+                Err(err) => {
+                    log::error!("failed to get textarea: {:#?}", err);
+                }
             }
         };
         network_manager
             .start(on_open_callback, on_message_callback)
             .expect("mini server failed to start");
         Self {
-            is_ready,
-            network_manager,
             session_id,
+            network_manager,
+            is_ready,
         }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Self::Message::UpdateValue => {
-                let textarea_value = utils::get_text_area(TEXTAREA_ID).value();
-                self.network_manager.send_message_to_all(&textarea_value);
-            }
+            Self::Message::UpdateValue => match utils::get_text_area(TEXTAREA_ID) {
+                Ok(text_area) => {
+                    self.network_manager.send_message_to_all(&text_area.value());
+                    true
+                }
+                Err(err) => {
+                    log::error!("failed to get textarea: {:#?}", err);
+                    false
+                }
+            },
         }
-        true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let oninput = ctx.link().callback(|_| Self::Message::UpdateValue);
         let disabled = !*self.is_ready.borrow();
-        let placeholder = "This is a live document shared with other users.\nYou will be allowed to write once other join, or your connection is established.";
+        let placeholder = "This is a live document shared with other users.\nYou will be allowed \
+                           to write once other join, or your connection is established.";
         html! {
             <main class="px-3">
                 <p class="lead"> { "Share session id: " } <span class="line">{ &self.session_id }</span> </p>
