@@ -11,14 +11,8 @@ fmt *FLAGS:
     cargo +nightly fmt {{FLAGS}}
 
 check *FLAGS:
-    cargo clippy --tests --examples {{FLAGS}}
-
-test *FLAGS:
-    @just run-signaling-server
-    # test on firefox
-    cd ./library && wasm-pack test --headless --firefox
-    # test on chrome
-    cd ./library && wasm-pack test --headless --chrome
+    cargo check # test for trivial errors first
+    cargo clippy --tests --examples {{FLAGS}} # thorough check second
 
 build *FLAGS:
     trunk build {{FLAGS}}
@@ -28,8 +22,7 @@ run *FLAGS:
 
 pre-commit:
     @just fmt
-    @just check
-    @just test
+    @just check -- -D warnings
     cargo doc --no-deps --all-features
     cargo spellcheck fix
 

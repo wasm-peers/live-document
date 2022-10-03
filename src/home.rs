@@ -1,21 +1,21 @@
-use crate::document::DocumentQuery;
 use wasm_peers::get_random_session_id;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+use crate::document::Query;
 use crate::utils::get_input;
 use crate::Route;
 
-pub(crate) enum HomeMsg {
+pub enum Msg {
     UpdateInput,
 }
 
-pub(crate) struct Home {
+pub struct Home {
     input: String,
 }
 
 impl Component for Home {
-    type Message = HomeMsg;
+    type Message = Msg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
@@ -26,10 +26,16 @@ impl Component for Home {
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Self::Message::UpdateInput => {
-                self.input = get_input("join-input").value();
-                true
-            }
+            Self::Message::UpdateInput => match get_input("join-input") {
+                Ok(input) => {
+                    self.input = input.value();
+                    true
+                }
+                Err(err) => {
+                    eprintln!("failed to get input: {err}");
+                    false
+                }
+            },
         }
     }
 
@@ -41,18 +47,18 @@ impl Component for Home {
                 history
                     .push_with_query(
                         Route::Document,
-                        DocumentQuery::new(get_random_session_id().into_inner()),
+                        Query::new(get_random_session_id().into_inner()),
                     )
                     .unwrap();
             })
         };
-        let update_input = ctx.link().callback(|_| HomeMsg::UpdateInput);
+        let update_input = ctx.link().callback(|_| Msg::UpdateInput);
         let join_existing = {
             let session_id = self.input.clone();
             Callback::once(move |_| {
                 if !session_id.is_empty() {
                     history
-                        .push_with_query(Route::Document, DocumentQuery::new(session_id))
+                        .push_with_query(Route::Document, Query::new(session_id))
                         .unwrap();
                 }
             })
